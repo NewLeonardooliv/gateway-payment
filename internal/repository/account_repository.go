@@ -56,6 +56,7 @@ func (repository *AccountRepository) FindByAPIKey(apiKey string) (*domain.Accoun
 		SELECT id, name, email, api_key, balance, created_at, updated_at
 		FROM accounts
 		WHERE api_key = $1
+			AND deleted_at IS NULL
 	`, apiKey).Scan(
 		&account.ID,
 		&account.Name,
@@ -88,6 +89,7 @@ func (repository *AccountRepository) FindByID(id string) (*domain.Account, error
 		SELECT id, name, email, api_key, balance, created_at, updated_at
 		FROM accounts
 		WHERE id = $1
+			AND deleted_at IS NULL
 	`, id).Scan(
 		&account.ID,
 		&account.Name,

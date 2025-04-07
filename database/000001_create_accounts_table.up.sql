@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS accounts (
     api_key VARCHAR(255) NOT NULL UNIQUE,
     balance DECIMAL(10,2) NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at timestamp NULL
 );
 
 CREATE INDEX idx_accounts_api_key ON accounts(api_key);
@@ -20,7 +21,8 @@ CREATE TABLE IF NOT EXISTS invoices (
     payment_type VARCHAR(50) NOT NULL,
     card_last_digits VARCHAR(4),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at timestamp NULL
 );
 
 CREATE INDEX idx_invoices_account_id ON invoices(account_id);
