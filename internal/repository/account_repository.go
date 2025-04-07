@@ -66,7 +66,7 @@ func (repository *AccountRepository) FindByAPIKey(apiKey string) (*domain.Accoun
 		&updatedAt,
 	)
 
-	if err != sql.ErrNoRows {
+	if err == sql.ErrNoRows {
 		return nil, domain.ErrAccountNotFound
 	}
 

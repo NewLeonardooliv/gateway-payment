@@ -27,7 +27,7 @@ func main() {
 	}
 
 	connectionString := fmt.Sprintf(
-		"host=%s port=%s port=%s port=%s port=%s port=%s",
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		getEnv("DB_HOST", "db"),
 		getEnv("DB_PORT", "5432"),
 		getEnv("DB_USER", "postgres"),
