@@ -38,3 +38,22 @@ func (service *AccountService) CreateAccount(input dto.CreateAccountInput) (*dto
 
 	return &output, nil
 }
+
+func (service *AccountService) UpdateBalance(apiKey string, amount float64) (*dto.AccountOutput, error) {
+	account, err := service.repository.FindByAPIKey(apiKey)
+
+	if err != nil {
+		return nil, err
+	}
+
+	account.AddBalance(amount)
+	err = service.repository.UpdateBalance(account)
+
+	if err != nil {
+		return nil, err
+	}
+
+	output := dto.FromAccount(account)
+
+	return &output, nil
+}
