@@ -57,3 +57,27 @@ func (service *AccountService) UpdateBalance(apiKey string, amount float64) (*dt
 
 	return &output, nil
 }
+
+func (service *AccountService) FindByAPIKey(apiKey string) (*dto.AccountOutput, error) {
+	account, err := service.repository.FindByAPIKey(apiKey)
+
+	if err != nil {
+		return nil, err
+	}
+
+	output := dto.FromAccount(account)
+
+	return &output, nil
+}
+
+func (service *AccountService) FindByID(id string) (*dto.AccountOutput, error) {
+	account, err := service.repository.FindByID(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	output := dto.FromAccount(account)
+
+	return &output, nil
+}
