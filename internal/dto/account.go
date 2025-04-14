@@ -12,13 +12,14 @@ type CreateAccountInput struct {
 }
 
 type AccountOutput struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Balance   float64   `json:"balance"`
-	APIKey    string    `json:"api_key,omitempty"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        string     `json:"id"`
+	Name      string     `json:"name"`
+	Email     string     `json:"email"`
+	Balance   float64    `json:"balance"`
+	APIKey    string     `json:"api_key,omitempty"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
 }
 
 func ToAccount(input CreateAccountInput) *domain.Account {
