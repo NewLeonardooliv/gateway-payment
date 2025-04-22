@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/NewLeonardooliv/gateway-payment/internal/service"
@@ -31,6 +32,8 @@ func (s *Server) ConfigureRoutes() {
 	invoiceHandler := handlers.NewInvoiceHandler(s.invoiceService)
 	authMiddleware := middleware.NewAuthMiddleware(s.accountService)
 
+	s.router.Get("/up", handlers.GetHealth)
+
 	s.router.Post("/accounts", accountHandler.Create)
 	s.router.Get("/accounts", accountHandler.Get)
 
@@ -43,6 +46,8 @@ func (s *Server) ConfigureRoutes() {
 }
 
 func (s *Server) Start() error {
+	log.Println("[WebServer] Server initiated.")
+
 	s.server = &http.Server{
 		Addr:    ":" + s.port,
 		Handler: s.router,
