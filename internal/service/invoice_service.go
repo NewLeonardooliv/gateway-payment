@@ -3,14 +3,15 @@ package service
 import (
 	"github.com/NewLeonardooliv/gateway-payment/internal/domain"
 	"github.com/NewLeonardooliv/gateway-payment/internal/dto"
+	"github.com/NewLeonardooliv/gateway-payment/internal/repository"
 )
 
 type InvoiceService struct {
-	invoiceRepository domain.InvoiceRepository
+	invoiceRepository repository.InvoiceRepository
 	accountService    AccountService
 }
 
-func NewInvoiceService(invoiceRepository domain.InvoiceRepository, accountService AccountService) *InvoiceService {
+func NewInvoiceService(invoiceRepository repository.InvoiceRepository, accountService AccountService) *InvoiceService {
 	return &InvoiceService{
 		invoiceRepository: invoiceRepository,
 		accountService:    accountService,

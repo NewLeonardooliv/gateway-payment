@@ -1,1 +1,5 @@
+cert/*
+!cert/.gitkeep
+
+.vscode
 .env

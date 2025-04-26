@@ -15,14 +15,34 @@ const (
 	StatusRejected Status = "rejected"
 )
 
+type Payer struct {
+	ID        string
+	Name      string
+	TaxID     string
+	Email     string
+	Phone     string
+	Address   string
+	Number    string
+	District  string
+	City      string
+	State     string
+	ZipCode   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time
+}
+
 type Invoice struct {
 	ID             string
+	Payer          Payer
+	Reference      string
 	AccountID      string
 	Amount         float64
 	Status         Status
 	Description    string
 	PaymentType    string
 	CardLastDigits string
+	DueDate        time.Time
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      time.Time
@@ -36,12 +56,28 @@ type CreditCard struct {
 	CardholderName string
 }
 
-func NewInvoice(accountID string, amount float64, description string, paymentType string, card CreditCard) (*Invoice, error) {
+func NewInvoice(accountID string, amount float64, description string, paymentType string, dueDate time.Time, reference string, card CreditCard, payer Payer) (*Invoice, error) {
 	if amount <= 0 {
 		return nil, ErrInvalidAmount
 	}
 
 	cardLastDigits := card.Number[len(card.Number)-4:]
+
+	invoicePayer := &Payer{
+		ID:        uuid.New().String(),
+		Name:      payer.Name,
+		TaxID:     payer.TaxID,
+		Email:     payer.Email,
+		Phone:     payer.Phone,
+		Address:   payer.Address,
+		Number:    payer.Number,
+		District:  payer.District,
+		City:      payer.City,
+		State:     payer.State,
+		ZipCode:   payer.ZipCode,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
 
 	return &Invoice{
 		ID:             uuid.New().String(),
@@ -51,6 +87,9 @@ func NewInvoice(accountID string, amount float64, description string, paymentTyp
 		Description:    description,
 		PaymentType:    paymentType,
 		CardLastDigits: cardLastDigits,
+		Payer:          *invoicePayer,
+		DueDate:        dueDate,
+		Reference:      reference,
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
 	}, nil

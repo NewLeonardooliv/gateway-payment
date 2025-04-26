@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -12,7 +12,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 )
 
-func main() {
+func Migrate() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -35,7 +35,7 @@ func main() {
 	}
 
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://database",
+		"file://database/migrations",
 		"postgres",
 		driver,
 	)

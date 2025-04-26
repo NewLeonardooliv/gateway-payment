@@ -20,9 +20,11 @@ CREATE TABLE IF NOT EXISTS invoices (
     description TEXT NOT NULL,
     payment_type VARCHAR(50) NOT NULL,
     card_last_digits VARCHAR(4),
+    reference TEXT NULL,
+    due_date TIMESTAMP NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at timestamp NULL
+    deleted_at TIMESTAMP NULL
 );
 
 CREATE INDEX idx_invoices_account_id ON invoices(account_id);
