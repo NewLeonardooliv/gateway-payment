@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/NewLeonardooliv/gateway-payment/database"
 	"github.com/NewLeonardooliv/gateway-payment/internal/bootstrap"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -13,5 +14,6 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	database.Migrate()
 	bootstrap.LoadWeb()
 }

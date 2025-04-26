@@ -1,7 +1,8 @@
-package repository
+package account_repository
 
 import (
 	"database/sql"
+	"log"
 	"time"
 
 	"github.com/NewLeonardooliv/gateway-payment/internal/domain"
@@ -49,6 +50,8 @@ func (repository *AccountRepository) Save(account *domain.Account) error {
 }
 
 func (repository *AccountRepository) FindByAPIKey(apiKey string) (*domain.Account, error) {
+	log.Printf("Finding account by API key: %s", apiKey)
+
 	var account domain.Account
 	var createdAt, updatedAt time.Time
 
@@ -68,20 +71,26 @@ func (repository *AccountRepository) FindByAPIKey(apiKey string) (*domain.Accoun
 	)
 
 	if err == sql.ErrNoRows {
+		log.Printf("Account not found with API key: %s", apiKey)
 		return nil, domain.ErrAccountNotFound
 	}
 
 	if err != nil {
+		log.Printf("Error finding account with API key %s: %v", apiKey, err)
 		return nil, err
 	}
 
 	account.CreatedAt = createdAt
 	account.UpdatedAt = updatedAt
 
+	log.Printf("Account found: ID=%s, Name=%s, Email=%s, APIKey=%s, Balance=%.2f",
+		account.ID, account.Name, account.Email, account.APIKey, account.Balance)
 	return &account, nil
 }
 
 func (repository *AccountRepository) FindByID(id string) (*domain.Account, error) {
+	log.Printf("Finding account by ID: %s", id)
+
 	var account domain.Account
 	var createdAt, updatedAt time.Time
 
@@ -100,24 +109,31 @@ func (repository *AccountRepository) FindByID(id string) (*domain.Account, error
 		&updatedAt,
 	)
 
-	if err != sql.ErrNoRows {
+	if err == sql.ErrNoRows {
+		log.Printf("Account not found with ID: %s", id)
 		return nil, domain.ErrAccountNotFound
 	}
 
 	if err != nil {
+		log.Printf("Error finding account with ID %s: %v", id, err)
 		return nil, err
 	}
 
 	account.CreatedAt = createdAt
 	account.UpdatedAt = updatedAt
 
+	log.Printf("Account found: ID=%s, Name=%s, Email=%s, APIKey=%s, Balance=%.2f",
+		account.ID, account.Name, account.Email, account.APIKey, account.Balance)
 	return &account, nil
 }
 
 func (repository *AccountRepository) UpdateBalance(account *domain.Account) error {
+	log.Printf("Updating balance for account ID %s to %.2f", account.ID, account.Balance)
+
 	tx, err := repository.db.Begin()
 
 	if err != nil {
+		log.Printf("Error starting transaction for account %s: %v", account.ID, err)
 		return err
 	}
 
@@ -128,17 +144,17 @@ func (repository *AccountRepository) UpdateBalance(account *domain.Account) erro
 	err = tx.QueryRow(`
 		SELECT balance
 		FROM accounts
-		WHERE id = $id
+		WHERE id = $1
 		FOR UPDATE
-	`, account.ID).Scan(
-		&currentBalance,
-	)
+	`, account.ID).Scan(&currentBalance)
 
 	if err == sql.ErrNoRows {
+		log.Printf("Account not found for balance update: %s", account.ID)
 		return domain.ErrAccountNotFound
 	}
 
 	if err != nil {
+		log.Printf("Error querying current balance for account %s: %v", account.ID, err)
 		return err
 	}
 
@@ -149,8 +165,15 @@ func (repository *AccountRepository) UpdateBalance(account *domain.Account) erro
 	`, account.Balance, time.Now(), account.ID)
 
 	if err != nil {
+		log.Printf("Error updating balance for account %s: %v", account.ID, err)
 		return err
 	}
 
-	return tx.Commit()
+	if err := tx.Commit(); err != nil {
+		log.Printf("Error committing transaction for account %s: %v", account.ID, err)
+		return err
+	}
+
+	log.Printf("Balance updated successfully for account %s", account.ID)
+	return nil
 }
