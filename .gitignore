@@ -3,3 +3,5 @@ cert/*
 
 .vscode
 .env
+bin
+app

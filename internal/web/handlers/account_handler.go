@@ -23,7 +23,9 @@ func (handler *AccountHandler) Create(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 
 		return
 	}
@@ -31,7 +33,9 @@ func (handler *AccountHandler) Create(w http.ResponseWriter, r *http.Request) {
 	output, err := handler.accountService.CreateAccount(input)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 
 		return
 	}
@@ -44,7 +48,9 @@ func (handler *AccountHandler) Create(w http.ResponseWriter, r *http.Request) {
 func (handler *AccountHandler) Get(w http.ResponseWriter, r *http.Request) {
 	apiKey := r.Header.Get("X-API-Key")
 	if apiKey == "" {
-		http.Error(w, "API Key is required", http.StatusUnauthorized)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"error": "API Key is required"})
 
 		return
 	}
@@ -52,7 +58,9 @@ func (handler *AccountHandler) Get(w http.ResponseWriter, r *http.Request) {
 	output, err := handler.accountService.FindByAPIKey(apiKey)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 
 		return
 	}

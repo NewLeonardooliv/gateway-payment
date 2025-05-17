@@ -24,7 +24,10 @@ func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var input dto.CreateInvoiceInput
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+
 		return
 	}
 
@@ -32,7 +35,10 @@ func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	output, err := h.service.Create(input)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+
 		return
 	}
 

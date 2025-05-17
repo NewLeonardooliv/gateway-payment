@@ -8,6 +8,7 @@ import (
 	"github.com/NewLeonardooliv/gateway-payment/internal/web/handlers"
 	"github.com/NewLeonardooliv/gateway-payment/internal/web/middleware"
 	"github.com/go-chi/chi/v5"
+	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 )
 
 type Server struct {
@@ -28,6 +29,8 @@ func NewServer(accountService *service.AccountService, invoiceService *service.I
 }
 
 func (s *Server) ConfigureRoutes() {
+	s.router.Use(chiMiddleware.Logger)
+
 	accountHandler := handlers.NewAccountHandler(s.accountService)
 	invoiceHandler := handlers.NewInvoiceHandler(s.invoiceService)
 	authMiddleware := middleware.NewAuthMiddleware(s.accountService)

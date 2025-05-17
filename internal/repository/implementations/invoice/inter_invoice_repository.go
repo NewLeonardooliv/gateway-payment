@@ -37,8 +37,8 @@ func NewInterInvoiceRepository(clientID, clientSecret string) *InterInvoiceRepos
 
 	tlsPath := shared.GetEnv("INTERBANK_TLS_PATH", "cert/")
 
-	certPath := tlsPath + "InterAPI.crt"
-	keyPath := tlsPath + "InterAPI.key"
+	certPath := tlsPath + "Sandbox_InterAPI_Certificado.crt"
+	keyPath := tlsPath + "Sandbox_InterAPI_Chave.key"
 
 	return &InterInvoiceRepository{clientID, clientSecret, certPath, keyPath, apiUrl}
 }
@@ -189,10 +189,10 @@ func (r *InterInvoiceRepository) Save(invoice *domain.Invoice) error {
 	if resp.StatusCode >= 400 {
 		log.Printf("[InterInvoiceRepository] Error creating boleto for invoice %s. Status: %d, Body: %s", invoice.Reference, resp.StatusCode, string(body))
 
-		return fmt.Errorf("error creating boleto: status %d", resp.StatusCode)
+		return fmt.Errorf("error creating Invoice: %s, %d, %s", invoice.Reference, resp.StatusCode, string(body))
 	}
 
-	log.Printf("[InterInvoiceRepository] Boleto successfully created for invoice %s", invoice.Reference)
+	log.Printf("[InterInvoiceRepository] Invoice successfully created for invoice %s", invoice.Reference)
 
 	return nil
 }
